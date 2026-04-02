@@ -6,7 +6,7 @@ An interactive, step by step visualization tool for understanding how Determinis
 
 ## Live Demo
 
-**[siddh-456.github.io/dfa-minimizer](https://siddh-456.github.io/dfa-minimizer)**
+**[siddh-456.github.io/dfa-minimizer](https://siddh-456.github.io/dfa-minimizer)** 
 
 ---
 

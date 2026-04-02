@@ -1173,20 +1173,14 @@
             overflow: hidden;
             position: relative;
             background: var(--slate-green);
-            /* KEY FIX: prevent browser scroll/pan hijacking touch on this element */
-            touch-action: none;
         }
 
-        /* KEY FIX: SVG canvas itself must not allow default touch behavior */
         .draw-canvas {
             background: transparent;
             display: block;
             width: 100%;
             height: 560px;
             cursor: crosshair;
-            touch-action: none; /* prevents page scroll while drawing */
-            user-select: none;
-            -webkit-user-select: none;
         }
 
         .chalk-texture {
@@ -1211,8 +1205,6 @@
             gap: 10px;
             z-index: 50;
             box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.3);
-            /* toolbar buttons should not block canvas pointer events flowing through */
-            touch-action: auto;
         }
 
         .tool-btn {
@@ -1232,7 +1224,6 @@
             cursor: pointer;
             border-bottom: 2px solid #ddd;
             white-space: nowrap;
-            touch-action: auto;
         }
 
         .tool-btn:hover {
@@ -1374,7 +1365,6 @@
             gap: 8px;
             border: 1px solid #E6D96A;
             min-width: 140px;
-            touch-action: auto;
         }
 
         .symbol-popup label {
@@ -1393,7 +1383,6 @@
             font-size: 2rem;
             color: #333;
             padding: 4px 0;
-            touch-action: auto;
         }
 
         .symbol-popup .popup-btns {
@@ -2512,49 +2501,13 @@
         class DrawMode {
             constructor() { this.nodes = []; this.edges = []; this.startId = null; this.accepts = new Set(); this.alphabet = ['a', 'b']; this.namePool = []; this.nameIdx = 0; this.tool = 'state'; this.drawingEdge = false; this.edgeFromId = null; this.mouseX = 0; this.mouseY = 0; this.dragging = false; this.dragId = null; this.eventsAttached = false; }
             setup(alphabetArr, namesArr) { this.nodes = []; this.edges = []; this.startId = null; this.accepts = new Set(); this.alphabet = alphabetArr; this.namePool = namesArr; this.nameIdx = 0; this.drawingEdge = false; this.edgeFromId = null; this.dragging = false; this.dragId = null; this.setTool('state'); this.attachEvents(); this.render(); this.validate(); }
-            attachEvents() {
-                if (this.eventsAttached) return;
-                const svg = document.getElementById('dfaCanvas');
-
-                // KEY FIX: use { passive: false } so we can call preventDefault()
-                // This stops the browser from scrolling the page while drawing
-                svg.addEventListener('pointerdown', e => this._onDown(e), { passive: false });
-                svg.addEventListener('pointermove', e => this._onMove(e), { passive: false });
-
-                // pointerup on window but only prevent default inside canvas context
-                window.addEventListener('pointerup', e => this._onUp(e));
-
-                // Also block touchmove on the workspace to prevent scroll while finger is down on canvas
-                const ws = document.getElementById('drawWorkspace');
-                ws.addEventListener('touchmove', e => {
-                    // Only block if a drawing action is active
-                    if (this.drawingEdge || this.dragging) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-
-                this.eventsAttached = true;
-            }
-            _svgPos(e) {
-                const svg = document.getElementById('dfaCanvas');
-                const rect = svg.getBoundingClientRect();
-                // Support both mouse and touch/pointer
-                const clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-                const clientY = e.clientY !== undefined ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-                return { x: clientX - rect.left, y: clientY - rect.top };
-            }
+            attachEvents() { if (this.eventsAttached) return; const svg = document.getElementById('dfaCanvas'); svg.addEventListener('pointerdown', e => this._onDown(e)); svg.addEventListener('pointermove', e => this._onMove(e)); window.addEventListener('pointerup', e => this._onUp(e)); this.eventsAttached = true; }
+            _svgPos(e) { const svg = document.getElementById('dfaCanvas'); const rect = svg.getBoundingClientRect(); return { x: e.clientX - rect.left, y: e.clientY - rect.top }; }
             _nodeAt(x, y) { return this.nodes.find(n => Math.hypot(n.x - x, n.y - y) < 28) || null; }
             _edgeAt(x, y) { return this.edges.find(ed => { const mid = this._edgeMid(ed); return Math.hypot(mid.x - x, mid.y - y) < 22; }) || null; }
             _edgeMid(ed) { const src = this.nodes.find(n => n.id === ed.from), tgt = this.nodes.find(n => n.id === ed.to); if (!src || !tgt) return { x: 0, y: 0 }; if (src === tgt) return { x: src.x, y: src.y - 70 }; const dx = tgt.x - src.x, dy = tgt.y - src.y; return { x: (src.x + tgt.x) / 2 - dy * 0.12, y: (src.y + tgt.y) / 2 + dx * 0.12 }; }
             _onDown(e) {
-                // KEY FIX: always prevent default on the canvas to stop scroll on tablet
-                if (e.target.closest('#dfaCanvas') || e.target.closest('.draw-workspace')) {
-                    // Don't prevent on toolbar buttons
-                    if (!e.target.closest('.toolbar') && !e.target.closest('.symbol-popup')) {
-                        e.preventDefault();
-                    }
-                }
-                if (e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
+                if (e.button !== 0) return;
                 const p = this._svgPos(e), node = this._nodeAt(p.x, p.y), edge = this._edgeAt(p.x, p.y);
                 if (this.tool === 'state') { if (node) { this.dragging = true; this.dragId = node.id; } else if (this.nameIdx < this.namePool.length) { this.nodes.push({ id: this.namePool[this.nameIdx++], x: p.x, y: p.y }); this._dust(p.x, p.y); this.render(); this.validate(); } }
                 else if (this.tool === 'trans') { if (node) { this.drawingEdge = true; this.edgeFromId = node.id; this.mouseX = p.x; this.mouseY = p.y; } }
@@ -2562,15 +2515,7 @@
                 else if (this.tool === 'accept') { if (node) { if (this.accepts.has(node.id)) this.accepts.delete(node.id); else this.accepts.add(node.id); this.render(); this.validate(); } }
                 else if (this.tool === 'delete') { if (node) { this.nodes = this.nodes.filter(n => n.id !== node.id); this.edges = this.edges.filter(e => e.from !== node.id && e.to !== node.id); if (this.startId === node.id) this.startId = null; this.accepts.delete(node.id); this.render(); this.validate(); } else if (edge) { this.edges.splice(this.edges.indexOf(edge), 1); this.render(); this.validate(); } }
             }
-            _onMove(e) {
-                // KEY FIX: prevent page scroll while dragging/drawing on canvas
-                if (this.drawingEdge || this.dragging) {
-                    e.preventDefault();
-                }
-                const p = this._svgPos(e); this.mouseX = p.x; this.mouseY = p.y;
-                if (this.dragging && this.dragId) { const n = this.nodes.find(n => n.id === this.dragId); if (n) { n.x = p.x; n.y = p.y; if (Math.random() > 0.75) this._dust(p.x, p.y); this.render(); } }
-                if (this.drawingEdge) this.render();
-            }
+            _onMove(e) { const p = this._svgPos(e); this.mouseX = p.x; this.mouseY = p.y; if (this.dragging && this.dragId) { const n = this.nodes.find(n => n.id === this.dragId); if (n) { n.x = p.x; n.y = p.y; if (Math.random() > 0.75) this._dust(p.x, p.y); this.render(); } } if (this.drawingEdge) this.render(); }
             _onUp(e) {
                 if (this.drawingEdge && this.edgeFromId) {
                     const p = this._svgPos(e), target = this._nodeAt(p.x, p.y);
@@ -2590,10 +2535,7 @@
                 let done = false;
                 const confirm = () => { if (done) return; const val = input.value.trim(); if (!val) { errEl.textContent = 'Enter a symbol'; return; } if (!this.alphabet.includes(val)) { errEl.textContent = `Must be: ${this.alphabet.join(', ')}`; input.style.borderBottomColor = '#C0392B'; return; } done = true; popup.remove(); cb(val); };
                 const cancel = () => { if (done) return; done = true; popup.remove(); cb(null); };
-                popup.addEventListener('mousedown', e => e.stopPropagation());
-                popup.addEventListener('pointerdown', e => e.stopPropagation());
-                popup.querySelector('.popup-ok').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); confirm(); });
-                popup.querySelector('.popup-cancel').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); cancel(); });
+                popup.addEventListener('mousedown', e => e.preventDefault());
                 popup.querySelector('.popup-ok').addEventListener('mousedown', e => { e.preventDefault(); confirm(); });
                 popup.querySelector('.popup-cancel').addEventListener('mousedown', e => { e.preventDefault(); cancel(); });
                 input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); confirm(); } if (e.key === 'Escape') { cancel(); } e.stopPropagation(); });
@@ -2645,7 +2587,7 @@
                 this.tool = t;
                 document.querySelectorAll('#chalkTray .tool-btn').forEach(b => b.classList.remove('active'));
                 const btn = document.getElementById('tool' + t.charAt(0).toUpperCase() + t.slice(1)); if (btn) btn.classList.add('active');
-                const msgs = { state: 'Tap to place a state — drag to move', trans: 'Drag from one state to another', start: 'Tap a state to mark as start', accept: 'Tap to toggle accept state', delete: 'Tap a state or arrow to erase' };
+                const msgs = { state: 'Click to place a state — drag to move', trans: 'Drag from one state to another', start: 'Click a state to mark as start', accept: 'Click to toggle accept state', delete: 'Click a state or arrow to erase' };
                 document.getElementById('trayMsg').textContent = msgs[t] || '';
             }
             reset() { this.nodes = []; this.edges = []; this.startId = null; this.accepts.clear(); this.nameIdx = 0; this.drawingEdge = false; this.edgeFromId = null; this.dragging = false; this.dragId = null; this.render(); this.validate(); }

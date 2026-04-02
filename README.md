@@ -1,4 +1,4 @@
-# The Minimization Visualizer — DFA Edition
+# The DFA Minimization Visualizer
 
 An interactive, step-by-step visualization tool for understanding how Deterministic Finite Automata are reduced to their simplest form.
 
@@ -12,9 +12,9 @@ An interactive, step-by-step visualization tool for understanding how Determinis
 
 ## What is This?
 
-DFA Minimization is a fundamental concept in automata theory — the process of reducing a Deterministic Finite Automaton to its smallest equivalent form by identifying and merging indistinguishable states.
+DFA Minimization is a fundamental concept in automata theory, the process of reducing a Deterministic Finite Automaton to its smallest equivalent form by identifying and merging indistinguishable states.
 
-This tool makes that process visual and intuitive. Instead of working through partition tables on paper, you watch the algorithm execute live — pair by pair, step by step — with animated grids, highlighted states, and plain-English explanations at every stage.
+This tool makes that process visual and intuitive. Instead of working through partition tables on paper, you watch the algorithm execute live pair by pair, step by step, with animated grids, highlighted states, and plain English explanations at every stage.
 
 Built as an educational tool for students studying Theory of Computation, Formal Languages, and Compiler Design.
 
@@ -24,7 +24,7 @@ Built as an educational tool for students studying Theory of Computation, Formal
 
 Two input methods: fill in a transition table manually, or draw your DFA on an interactive chalkboard canvas.
 
-Step-by-step algorithm visualization across 6 annotated sections. An animated distinguishability grid where cells flip as pairs get marked or identified as equivalent. Live node highlighting on the original DFA graph as each pair is evaluated. Dependency highlights during propagation showing exactly why a pair gets marked. Equivalence class display showing which states will be merged. The minimized DFA graph is rendered with animation after the algorithm completes. The final result can be exported as a JSON file. A speed slider lets you adjust playback from slow to fast depending on whether you are learning or reviewing.
+Step by step algorithm visualization across 6 annotated sections. An animated distinguishability grid where cells flip as pairs get marked or identified as equivalent. Live node highlighting on the original DFA graph as each pair is evaluated. Dependency highlights during propagation showing exactly why a pair gets marked. Equivalence class display showing which states will be merged. The minimized DFA graph is rendered with animation after the algorithm completes. The final result can be exported as a JSON file. A speed slider lets you adjust playback from slow to fast depending on whether you are learning or reviewing.
 
 ---
 
@@ -32,15 +32,15 @@ Step-by-step algorithm visualization across 6 annotated sections. An animated di
 
 The tool implements the Table-Filling (Myhill-Nerode) Algorithm in three phases.
 
-**Phase 1 — Marking Base Pairs**
+**Phase 1: Marking Base Pairs**
 
 Every pair of states (p, q) where exactly one is an accepting state is immediately marked as distinguishable. These pairs form the seed for the next phase.
 
-**Phase 2 — Iterative Propagation**
+**Phase 2: Iterative Propagation**
 
 For every unmarked pair (p, q) and every input symbol a: if the transitions δ(p, a) and δ(q, a) lead to an already-marked pair, then (p, q) must also be marked. This repeats until no new pairs are marked, which is called fixed-point convergence.
 
-**Phase 3 — Equivalence Classes**
+**Phase 3: Equivalence Classes**
 
 Any pair that remains unmarked after propagation means those two states are indistinguishable — they behave identically on all possible inputs. These equivalent states are grouped into equivalence classes and merged into single states in the minimized DFA.
 
@@ -64,9 +64,9 @@ Once minimization starts, the tool walks through 6 sections automatically. Use t
 |---|---|
 | 01 Input | Your DFA definition |
 | 02 Original Graph | Your DFA rendered as a state diagram |
-| 03 Base Pairs | Phase 1 — initial distinguishable pairs marked |
-| 04 Propagation | Phase 2 — iterative marking with dependency highlights |
-| 05 Equivalences | Phase 3 — equivalent pairs identified and grouped |
+| 03 Base Pairs | Phase 1: initial distinguishable pairs marked |
+| 04 Propagation | Phase 2: iterative marking with dependency highlights |
+| 05 Equivalences | Phase 3: equivalent pairs identified and grouped |
 | 06 Minimized DFA | Final minimized automaton with transition table |
 
 ---
@@ -98,13 +98,13 @@ dfa-minimizer/
 
 ## Technical Notes
 
-The algorithm uses Union-Find for partition merging during the equivalence class step. State diagrams are rendered using SVG. The distinguishability grid uses CSS 3D transforms for the flip animation. The draw mode is built on the Pointer Events API directly on an SVG canvas. Fonts are loaded from Google Fonts — Playfair Display for headings, DM Sans for body text, and Caveat for the chalkboard aesthetic.
+The algorithm uses Union-Find for partition merging during the equivalence class step. State diagrams are rendered using SVG. The distinguishability grid uses CSS 3D transforms for the flip animation. The draw mode is built on the Pointer Events API directly on an SVG canvas. Fonts are loaded from Google Fonts Playfair Display for headings, DM Sans for body text, and Caveat for the chalkboard aesthetic.
 
 ---
 
 ## Academic Context
 
-This project was built as part of a course on Theory of Computation and Formal Languages. The minimization algorithm is based on the Myhill-Nerode theorem, which states that the minimum DFA for a regular language is unique up to isomorphism, characterized by the equivalence classes of the indistinguishability relation.
+This project was built as part of a course on Theory of Computation and Formal Languages. The minimization algorithm is based on the Myhill Nerode theorem, which states that the minimum DFA for a regular language is unique up to isomorphism, characterized by the equivalence classes of the indistinguishability relation.
 
 Two states p and q are distinguishable if there exists some string w such that exactly one of δ(p, w) and δ(q, w) is an accepting state. The algorithm finds all such distinguishable pairs, and everything remaining is equivalent.
 

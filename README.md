@@ -1,6 +1,6 @@
 # The DFA Minimization Visualizer
 
-An interactive, step-by-step visualization tool for understanding how Deterministic Finite Automata are reduced to their simplest form.
+An interactive, step by step visualization tool for understanding how Deterministic Finite Automata are reduced to their simplest form.
 
 ---
 
@@ -30,7 +30,7 @@ Step by step algorithm visualization across 6 annotated sections. An animated di
 
 ## How the Algorithm Works
 
-The tool implements the Table-Filling (Myhill-Nerode) Algorithm in three phases.
+The tool implements the Table Filling (Myhill Nerode) Algorithm in three phases.
 
 **Phase 1: Marking Base Pairs**
 
@@ -38,11 +38,11 @@ Every pair of states (p, q) where exactly one is an accepting state is immediate
 
 **Phase 2: Iterative Propagation**
 
-For every unmarked pair (p, q) and every input symbol a: if the transitions δ(p, a) and δ(q, a) lead to an already-marked pair, then (p, q) must also be marked. This repeats until no new pairs are marked, which is called fixed-point convergence.
+For every unmarked pair (p, q) and every input symbol a: if the transitions δ(p, a) and δ(q, a) lead to an already-marked pair, then (p, q) must also be marked. This repeats until no new pairs are marked, which is called fixed point convergence.
 
 **Phase 3: Equivalence Classes**
 
-Any pair that remains unmarked after propagation means those two states are indistinguishable — they behave identically on all possible inputs. These equivalent states are grouped into equivalence classes and merged into single states in the minimized DFA.
+Any pair that remains unmarked after propagation means those two states are indistinguishable they behave identically on all possible inputs. These equivalent states are grouped into equivalence classes and merged into single states in the minimized DFA.
 
 ---
 
@@ -54,11 +54,11 @@ Set the alphabet (for example a, b) and the number of states. Fill in the transi
 
 **Draw Mode**
 
-Click Draw Mode and configure your alphabet and state names in the setup dialog. Use the toolbar on the chalkboard canvas to place states, draw transitions, set the start state, and toggle accept states. The validation badge in the top-right corner of the canvas turns green when your DFA is complete and valid. Then click WATCH IT MINIMIZE.
+Click Draw Mode and configure your alphabet and state names in the setup dialog. Use the toolbar on the chalkboard canvas to place states, draw transitions, set the start state, and toggle accept states. The validation badge in the top right corner of the canvas turns green when your DFA is complete and valid. Then click WATCH IT MINIMIZE.
 
 **Watching the Visualization**
 
-Once minimization starts, the tool walks through 6 sections automatically. Use the floating pause button at the bottom-right to pause and resume at any time.
+Once minimization starts, the tool walks through 6 sections automatically. Use the floating pause button at the bottom right to pause and resume at any time.
 
 | Section | What You See |
 |---|---|
@@ -80,13 +80,13 @@ git clone https://github.com/Siddh-456/dfa-minimizer.git
 cd dfa-minimizer
 ```
 
-Then open index.html by double-clicking it in your file explorer, or by dragging it into a browser window.
+Then open index.html by double clicking it in your file explorer, or by dragging it into a browser window.
 
 ---
 
 ## Project Structure
 
-The entire application is a single self-contained file. No frameworks, no build tools, no external libraries are required. Everything runs directly in the browser.
+The entire application is a single self contained file. No frameworks, no build tools, no external libraries are required. Everything runs directly in the browser.
 
 ```
 dfa-minimizer/
@@ -98,7 +98,7 @@ dfa-minimizer/
 
 ## Technical Notes
 
-The algorithm uses Union-Find for partition merging during the equivalence class step. State diagrams are rendered using SVG. The distinguishability grid uses CSS 3D transforms for the flip animation. The draw mode is built on the Pointer Events API directly on an SVG canvas. Fonts are loaded from Google Fonts Playfair Display for headings, DM Sans for body text, and Caveat for the chalkboard aesthetic.
+The algorithm uses Union Find for partition merging during the equivalence class step. State diagrams are rendered using SVG. The distinguishability grid uses CSS 3D transforms for the flip animation. The draw mode is built on the Pointer Events API directly on an SVG canvas. Fonts are loaded from Google Fonts Playfair Display for headings, DM Sans for body text, and Caveat for the chalkboard aesthetic.
 
 ---
 

@@ -36,37 +36,37 @@ It works especially well for classroom demos, self-study, viva preparation, and 
 
 <table>
   <tr>
-    <td colspan="2"><img src="images/image%20(3).png" alt="Theory reference section" width="100%" /></td>
+    <td colspan="2"><img src="images/image%20(3).jpg" alt="Theory reference section" width="100%" /></td>
   </tr>
   <tr>
     <td colspan="2"><strong>Theory Reference</strong><br>Read DFA basics, why minimization matters, Myhill-Nerode intuition, the table-filling algorithm, and a worked example without leaving the app.</td>
   </tr>
   <tr>
-    <td width="50%"><img src="images/image%20(7).png" alt="Table mode input" width="100%" /></td>
-    <td width="50%"><img src="images/image%20(8).png" alt="Regex mode input" width="100%" /></td>
+    <td width="50%"><img src="images/image%20(7).jpg" alt="Table mode input" width="100%" /></td>
+    <td width="50%"><img src="images/image%20(8).jpg" alt="Regex mode input" width="100%" /></td>
   </tr>
   <tr>
     <td><strong>Table Mode</strong><br>Define the DFA directly through a transition matrix, start-state selector, and accept-state toggles.</td>
     <td><strong>RegEx Mode</strong><br>Type a regular expression and preview the generated DFA live, together with operator hints and machine metadata.</td>
   </tr>
   <tr>
-    <td width="50%"><img src="images/image%20(6).png" alt="Draw mode interface" width="100%" /></td>
-    <td width="50%"><img src="images/image%20(9).png" alt="Original topology visualization" width="100%" /></td>
+    <td width="50%"><img src="images/image%20(6).jpg" alt="Draw mode interface" width="100%" /></td>
+    <td width="50%"><img src="images/image%20(9).jpg" alt="Original topology visualization" width="100%" /></td>
   </tr>
   <tr>
     <td><strong>Draw Mode</strong><br>Sketch the automaton visually on a chalkboard-style workspace and see the DFA take shape interactively.</td>
     <td><strong>Step 2: Original Topology</strong><br>Inspect the original machine before minimization begins, including state count, alphabet, start state, and accepting states.</td>
   </tr>
   <tr>
-    <td width="50%"><img src="images/image%20(5).png" alt="Intermediate minimization step" width="100%" /></td>
-    <td width="50%"><img src="images/image%20(4).png" alt="Final minimized DFA" width="100%" /></td>
+    <td width="50%"><img src="images/image%20(5).jpg" alt="Intermediate minimization step" width="100%" /></td>
+    <td width="50%"><img src="images/image%20(4).jpg" alt="Final minimized DFA" width="100%" /></td>
   </tr>
   <tr>
     <td><strong>Intermediate Step</strong><br>Follow iterative propagation with the distinguishability table, algorithm log, live counters, and step controls visible on screen.</td>
     <td><strong>Final Minimized DFA</strong><br>See the reduced automaton, compare original vs minimized state count, and inspect the final transition table and export action.</td>
   </tr>
   <tr>
-    <td colspan="2"><img src="images/image%20(2).png" alt="Test equivalence section" width="100%" /></td>
+    <td colspan="2"><img src="images/image%20(2).jpg" alt="Test equivalence section" width="100%" /></td>
   </tr>
   <tr>
     <td colspan="2"><strong>Test Equivalence</strong><br>Run strings on both DFAs, compare accept/reject results, and visualize traversal paths side by side to confirm the language is preserved.</td>
